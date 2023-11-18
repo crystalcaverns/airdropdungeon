@@ -4,6 +4,7 @@ import caps123987.airdropdungeon.AirDropDungeon;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@SuppressWarnings("deprecation")
 public class TaskHandler {
 
     public final int minDelay;
@@ -19,6 +21,7 @@ public class TaskHandler {
     public final int playerPercent;
     public final AirDropDungeon plugin;
     public final Logger logger;
+    private BukkitTask bukkitTask;
     public TaskHandler(int minDelay, int maxDelay, int playerPercent, AirDropDungeon plugin){
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;
@@ -26,29 +29,67 @@ public class TaskHandler {
         this.plugin = plugin;
         this.logger = plugin.logger;
     }
-    @SuppressWarnings("deprecation")
+
     private void run(){
         Bukkit.broadcastMessage(ChatColor.RED+"Air Drop incoming");
         Collection<? extends Player> playersTemp = Bukkit.getServer().getOnlinePlayers();
 
-        //tadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevim
-        List<Player> players = new ArrayList<Player>(playersTemp);
 
-        for(Player p : players){
-            p.sendMessage("hi: "+p.getName());
+        List<Player> players = new ArrayList<Player>(playersTemp);
+        int playerCount = (int) Math.ceil(players.size()*(playerPercent/100.0));
+
+        Bukkit.broadcastMessage("Player change: "+playerCount);
+
+        List<Player> selectedPlayers = new ArrayList<Player>();
+
+        for(int i = 0;i<playerCount;i++){
+            int listIdx = ThreadLocalRandom.current().nextInt(0, players.size());
+
+            selectedPlayers.add(players.get(listIdx));
+            players.remove(listIdx);
+        }
+        for(Player p:selectedPlayers){
+            p.sendMessage(ChatColor.GRAY+"Air Drop spawned near you");
         }
 
     }
 
-    private void setUpTask(){
-        int delay = ThreadLocalRandom.current().nextInt(minDelay, maxDelay + 1);
+    private BukkitTask setUpTask(){
+        int delay = ThreadLocalRandom.current().nextInt(minDelay*10, (maxDelay*10) + 1);
 
-        Bukkit.getScheduler().runTaskLater(plugin, this::run,delay);
+        logger.log(Level.INFO,"delay: "+delay);
+        Bukkit.broadcastMessage("delay: "+delay);
+
+        return Bukkit.getScheduler().runTaskLater(plugin, ()->{
+            run();
+            bukkitTask = setUpTask();
+        }, (long) ((delay/10.0) *20.0*60.0));
     }
 
 
     public void start(){
         logger.log(Level.INFO,"Setting up");
-        setUpTask();
+        bukkitTask = setUpTask();
+        setRepairTask(30);
+    }
+
+    public void setRepairTask(int seconds){
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, ()->{
+
+
+
+            BukkitTask currentTask = getCurrentTask();
+
+            if(!Bukkit.getScheduler().isQueued(currentTask.getTaskId())){
+                logger.log(Level.SEVERE,"Task is not running, Reparing");
+                bukkitTask.cancel();
+                setUpTask();
+            }
+
+        },20L,seconds * 20L);
+    }
+
+    public BukkitTask getCurrentTask(){
+        return bukkitTask;
     }
 }
