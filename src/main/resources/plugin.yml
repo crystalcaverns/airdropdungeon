@@ -1,0 +1,4 @@
+name: AirDropDungeon
+version: '${project.version}'
+main: caps123987.airdropdungeon.AirDropDungeon
+api-version: '1.20'
