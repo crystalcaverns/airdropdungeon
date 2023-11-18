@@ -1,5 +1,6 @@
 package caps123987.Handlers;
 
+import caps123987.Drop.AirDrop;
 import caps123987.airdropdungeon.AirDropDungeon;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -49,7 +50,8 @@ public class TaskHandler {
             players.remove(listIdx);
         }
         for(Player p:selectedPlayers){
-            p.sendMessage(ChatColor.GRAY+"Air Drop spawned near you");
+            new AirDrop(p,30);
+
         }
 
     }
@@ -81,7 +83,7 @@ public class TaskHandler {
             BukkitTask currentTask = getCurrentTask();
 
             if(!Bukkit.getScheduler().isQueued(currentTask.getTaskId())){
-                logger.log(Level.SEVERE,"Task is not running, Reparing");
+                logger.log(Level.SEVERE,"Task is not running, Repairing");
                 bukkitTask.cancel();
                 setUpTask();
             }
