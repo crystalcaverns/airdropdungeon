@@ -12,8 +12,9 @@ public final class AirDropDungeon extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        taskHandler = new TaskHandler(1,2,50, this);
         logger = super.getLogger();
+        taskHandler = new TaskHandler(1,2,50, this);
+        taskHandler.start();
     }
 
     @Override

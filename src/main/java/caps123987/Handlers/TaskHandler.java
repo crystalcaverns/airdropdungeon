@@ -3,7 +3,6 @@ package caps123987.Handlers;
 import caps123987.airdropdungeon.AirDropDungeon;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -35,7 +34,9 @@ public class TaskHandler {
         //tadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevimtadyNevim
         List<Player> players = new ArrayList<Player>(playersTemp);
 
-
+        for(Player p : players){
+            p.sendMessage("hi: "+p.getName());
+        }
 
     }
 
