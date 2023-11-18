@@ -50,8 +50,7 @@ public class TaskHandler {
             players.remove(listIdx);
         }
         for(Player p:selectedPlayers){
-            new AirDrop(p,30);
-
+            new AirDrop(p,180);
         }
 
     }
@@ -77,8 +76,6 @@ public class TaskHandler {
 
     public void setRepairTask(int seconds){
         Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, ()->{
-
-
 
             BukkitTask currentTask = getCurrentTask();
 

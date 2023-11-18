@@ -2,16 +2,13 @@ package caps123987.Drop;
 
 import caps123987.airdropdungeon.AirDropDungeon;
 import org.bukkit.*;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ItemDisplay;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Transformation;
-import org.bukkit.util.Vector;
-import org.joml.AxisAngle4f;
-import org.joml.Vector3f;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.nio.Buffer;
 import java.util.concurrent.ThreadLocalRandom;
 
 @SuppressWarnings("deprecation")
@@ -41,23 +38,20 @@ public class AirDrop {
     public void run(){
         player.sendMessage("X: "+x+" Z: "+z);
 
-        ItemDisplay itemDisplay = (ItemDisplay) world.spawnEntity(new Location(world,x+0.5, world.getMaxHeight(),z+0.5), EntityType.ITEM_DISPLAY);
-        itemDisplay.setItemStack(new ItemStack(Material.CHEST,1));
+        ArmorStand armorStand = (ArmorStand) world.spawnEntity(new Location(world,x+0.5, world.getMaxHeight(),z+0.5), EntityType.ARMOR_STAND);
 
-        itemDisplay.setGravity(true);
+        armorStand.setGravity(true);
 
-        repeatTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(AirDropDungeon.getInstance(),()->{
+        ItemStack headItem = new ItemStack(Material.KNOWLEDGE_BOOK);
+        ItemMeta meta = headItem.getItemMeta();
+        meta.setCustomModelData(301);
+        headItem.setItemMeta(meta);
 
-            if(itemDisplay.getLocation().getBlock().getType().equals(Material.AIR)){
-                itemDisplay.teleport(itemDisplay.getLocation().clone().add(0,-1,0));
-            }
-
-        },100L,1L);
+        armorStand.setItem(EquipmentSlot.HEAD,headItem);
+        armorStand.addScoreboardTag("AirDrop");
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(AirDropDungeon.getInstance(),()->{
-            Bukkit.getScheduler().cancelTask(repeatTaskId);
-
-            itemDisplay.remove();
+            armorStand.remove();
         },timer);
     }
 }
