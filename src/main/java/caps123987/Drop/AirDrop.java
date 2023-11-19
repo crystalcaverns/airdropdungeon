@@ -8,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -19,6 +21,7 @@ public class AirDrop {
     final World world;
     int timer;
     int repeatTaskId;
+    int waitTaskId;
 
     public AirDrop(Player p, int timeSec){
         this.timer = timeSec*20;
@@ -41,6 +44,8 @@ public class AirDrop {
         ArmorStand armorStand = (ArmorStand) world.spawnEntity(new Location(world,x+0.5, world.getMaxHeight(),z+0.5), EntityType.ARMOR_STAND);
 
         armorStand.setGravity(true);
+        armorStand.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING,-1,3));
+        armorStand.setInvulnerable(true);
 
         ItemStack headItem = new ItemStack(Material.KNOWLEDGE_BOOK);
         ItemMeta meta = headItem.getItemMeta();
@@ -50,8 +55,31 @@ public class AirDrop {
         armorStand.setItem(EquipmentSlot.HEAD,headItem);
         armorStand.addScoreboardTag("AirDrop");
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(AirDropDungeon.getInstance(),()->{
+
+        repeatTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(AirDropDungeon.instance,()->{
+
+            if(armorStand.isDead()){
+                Bukkit.getScheduler().cancelTask(getRepeatTaskId());
+                Bukkit.getScheduler().cancelTask(getWaitTaskId());
+            }
+
+            Location loc = armorStand.getLocation().clone().add(0,3,0);
+
+            loc.getWorld().spawnParticle(Particle.REDSTONE,loc,2,0.1,.7,0.1,0.1,new Particle.DustOptions(Color.RED,2),true);
+
+        },0,1);
+
+        waitTaskId = Bukkit.getScheduler().scheduleSyncDelayedTask(AirDropDungeon.getInstance(),()->{
+            Bukkit.getScheduler().cancelTask(getRepeatTaskId());
             armorStand.remove();
         },timer);
+    }
+
+    public int getRepeatTaskId() {
+        return repeatTaskId;
+    }
+
+    public int getWaitTaskId() {
+        return waitTaskId;
     }
 }

@@ -3,8 +3,12 @@ package caps123987.airdropdungeon;
 import caps123987.Handlers.TaskHandler;
 import caps123987.Listeners.ClaimListener;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class AirDropDungeon extends JavaPlugin {
@@ -22,10 +26,18 @@ public final class AirDropDungeon extends JavaPlugin {
         taskHandler.start();
 
         Bukkit.getServer().getPluginManager().registerEvents(new ClaimListener(),this);
+
+
+
     }
 
     @Override
     public void onDisable() {
+        for(Entity e: Bukkit.getServer().getWorld("world").getEntities()){
+            if(e.getScoreboardTags().contains("AirDrop")){
+                e.remove();
+            }
+        }
         // Plugin shutdown logic
     }
 
