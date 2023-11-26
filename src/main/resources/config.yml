@@ -1,0 +1,5 @@
+minDelay: 1
+maxDelay: 2
+playerPercent: 25
+despawnTimeSec: 180
+radius: 30

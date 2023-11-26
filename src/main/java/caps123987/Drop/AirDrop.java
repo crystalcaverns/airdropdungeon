@@ -23,14 +23,14 @@ public class AirDrop {
     int repeatTaskId;
     int waitTaskId;
 
-    public AirDrop(Player p, int timeSec){
+    public AirDrop(Player p, int timeSec, AirDropDungeon plugin){
         this.timer = timeSec*20;
         this.player = p;
         this.world = p.getWorld();
         p.sendMessage(ChatColor.GRAY+"Air Drop spawned near you");
 
-        int xOff = ThreadLocalRandom.current().nextInt(-30,31);
-        int zOff = ThreadLocalRandom.current().nextInt(-30,31);
+        int xOff = ThreadLocalRandom.current().nextInt(-plugin.radius,plugin.radius+1);
+        int zOff = ThreadLocalRandom.current().nextInt(-plugin.radius,plugin.radius+1);
 
         x = xOff + (int) p.getLocation().getX();
         z = zOff + (int) p.getLocation().getZ();
@@ -56,7 +56,7 @@ public class AirDrop {
         armorStand.addScoreboardTag("AirDrop");
 
 
-        repeatTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(AirDropDungeon.instance,()->{
+        repeatTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(AirDropDungeon.getInstance(),()->{
 
             if(armorStand.isDead()){
                 Bukkit.getScheduler().cancelTask(getRepeatTaskId());

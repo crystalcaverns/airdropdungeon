@@ -50,7 +50,7 @@ public class TaskHandler {
             players.remove(listIdx);
         }
         for(Player p:selectedPlayers){
-            new AirDrop(p,180);
+            new AirDrop(p,plugin.despawnTimeSec, plugin);
         }
 
     }
