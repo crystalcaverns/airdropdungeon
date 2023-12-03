@@ -32,14 +32,15 @@ public class TaskHandler {
     }
 
     private void run(){
-        Bukkit.broadcastMessage(ChatColor.RED+"Air Drop incoming");
+
+
+        Bukkit.broadcastMessage(ChatColor.ITALIC+"Airdrop just spawned");
         Collection<? extends Player> playersTemp = Bukkit.getServer().getOnlinePlayers();
 
 
         List<Player> players = new ArrayList<Player>(playersTemp);
         int playerCount = (int) Math.ceil(players.size()*(playerPercent/100.0));
 
-        Bukkit.broadcastMessage("Player change: "+playerCount);
 
         List<Player> selectedPlayers = new ArrayList<Player>();
 
@@ -58,8 +59,6 @@ public class TaskHandler {
     private BukkitTask setUpTask(){
         int delay = ThreadLocalRandom.current().nextInt(minDelay*10, (maxDelay*10) + 1);
 
-        logger.log(Level.INFO,"delay: "+delay);
-        Bukkit.broadcastMessage("delay: "+delay);
 
         return Bukkit.getScheduler().runTaskLater(plugin, ()->{
             run();

@@ -39,13 +39,13 @@ public class AirDrop {
     }
 
     public void run(){
-        player.sendMessage("X: "+x+" Z: "+z);
 
         ArmorStand armorStand = (ArmorStand) world.spawnEntity(new Location(world,x+0.5, world.getMaxHeight(),z+0.5), EntityType.ARMOR_STAND);
 
         armorStand.setGravity(true);
         armorStand.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING,-1,3));
         armorStand.setInvulnerable(true);
+        armorStand.setInvisible(true);
 
         ItemStack headItem = new ItemStack(Material.KNOWLEDGE_BOOK);
         ItemMeta meta = headItem.getItemMeta();
