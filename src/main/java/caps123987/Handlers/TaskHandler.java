@@ -23,6 +23,7 @@ public class TaskHandler {
     public final AirDropDungeon plugin;
     public final Logger logger;
     private BukkitTask bukkitTask;
+    private List<AirDrop> airDrops = new ArrayList<AirDrop>();
     public TaskHandler(int minDelay, int maxDelay, int playerPercent, AirDropDungeon plugin){
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;
@@ -51,7 +52,9 @@ public class TaskHandler {
             players.remove(listIdx);
         }
         for(Player p:selectedPlayers){
-            new AirDrop(p,plugin.despawnTimeSec, plugin);
+            if(p.getWorld().getName().equals("world")){
+                airDrops.add(new AirDrop(p,plugin.despawnTimeSec, plugin));
+            }
         }
 
     }
@@ -89,5 +92,11 @@ public class TaskHandler {
 
     public BukkitTask getCurrentTask(){
         return bukkitTask;
+    }
+    public void removeAirDrop(AirDrop airDrop){
+        airDrops.remove(airDrop);
+    }
+    public List<AirDrop> getAirDrops(){
+        return airDrops;
     }
 }

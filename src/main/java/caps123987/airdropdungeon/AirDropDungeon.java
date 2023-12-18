@@ -1,5 +1,6 @@
 package caps123987.airdropdungeon;
 
+import caps123987.Drop.AirDrop;
 import caps123987.Handlers.TaskHandler;
 import caps123987.Listeners.ClaimListener;
 import org.bukkit.Bukkit;
@@ -64,6 +65,11 @@ public final class AirDropDungeon extends JavaPlugin {
                 e.remove();
             }
         }
+        //for cancel all airdrops
+        for (AirDrop airDrop : taskHandler.getAirDrops()){
+            airDrop.cancel();
+        }
+
         // Plugin shutdown logic
     }
 

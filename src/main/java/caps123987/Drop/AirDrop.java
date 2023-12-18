@@ -22,11 +22,14 @@ public class AirDrop {
     int timer;
     int repeatTaskId;
     int waitTaskId;
+    AirDropDungeon plugin;
+    ArmorStand armorStand;
 
     public AirDrop(Player p, int timeSec, AirDropDungeon plugin){
         this.timer = timeSec*20;
         this.player = p;
         this.world = p.getWorld();
+        this.plugin = plugin;
         p.sendMessage(ChatColor.GRAY+"Air Drop spawned near you");
 
         int xOff = ThreadLocalRandom.current().nextInt(-plugin.radius,plugin.radius+1);
@@ -40,7 +43,7 @@ public class AirDrop {
 
     public void run(){
 
-        ArmorStand armorStand = (ArmorStand) world.spawnEntity(new Location(world,x+0.5, world.getMaxHeight(),z+0.5), EntityType.ARMOR_STAND);
+        armorStand = (ArmorStand) world.spawnEntity(new Location(world,x+0.5, world.getMaxHeight(),z+0.5), EntityType.ARMOR_STAND);
 
         armorStand.setGravity(true);
         armorStand.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING,-1,3));
@@ -72,6 +75,7 @@ public class AirDrop {
         waitTaskId = Bukkit.getScheduler().scheduleSyncDelayedTask(AirDropDungeon.getInstance(),()->{
             Bukkit.getScheduler().cancelTask(getRepeatTaskId());
             armorStand.remove();
+            plugin.taskHandler.removeAirDrop(this);
         },timer);
     }
 
@@ -81,5 +85,10 @@ public class AirDrop {
 
     public int getWaitTaskId() {
         return waitTaskId;
+    }
+    public void cancel(){
+        Bukkit.getScheduler().cancelTask(getRepeatTaskId());
+        Bukkit.getScheduler().cancelTask(getWaitTaskId());
+        armorStand.remove();
     }
 }
